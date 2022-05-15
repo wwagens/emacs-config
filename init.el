@@ -10,8 +10,6 @@
  )
 
 
-(set-frame-parameter (selected-frame) 'alpha '(95 95)) ;;Activates transpareci
-(add-to-list 'default-frame-alist '(alpha 95 95))
 
 (setq visible-bell 1)
 
@@ -27,12 +25,12 @@
 (unless package-archive-contents
  (package-refresh-contents))
 
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+
+(setq custom-safe-themes t)
+(load-theme 'doom-nord)
 
 ;;set up evil mode
 
@@ -50,16 +48,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "d47f868fd34613bd1fc11721fe055f26fd163426a299d45ce69bef1f109e1e71" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "1704976a1797342a1b4ea7a75bdbb3be1569f4619134341bd5a4c1cfb16abad4" "a7b20039f50e839626f8d6aa96df62afebb56a5bbd1192f557cb2efb5fcfb662" default)))
+    ("c4063322b5011829f7fdd7509979b5823e8eea2abf1fe5572ec4b7af1dd78519" "f6665ce2f7f56c5ed5d91ed5e7f6acb66ce44d0ef4acfaa3a42c7cfe9e9a9013" "cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "d47f868fd34613bd1fc11721fe055f26fd163426a299d45ce69bef1f109e1e71" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "1704976a1797342a1b4ea7a75bdbb3be1569f4619134341bd5a4c1cfb16abad4" "a7b20039f50e839626f8d6aa96df62afebb56a5bbd1192f557cb2efb5fcfb662" default)))
  '(package-selected-packages
    (quote
-    (doom-themes rainbow-delimiters doom-modeline ggtags yasnippet flycheck auto-complete which-key cmake-ide evil use-package))))
-
-(use-package which-key
-:ensure t
-:config
-(which-key-mode))
-
+    (all-the-icons-ivy yasnippet-classic-snippets doom-themes rainbow-delimiters doom-modeline ggtags yasnippet flycheck auto-complete which-key cmake-ide evil use-package))))
 
 ;; Auto completion
 (use-package auto-complete
@@ -70,17 +62,27 @@
 (global-auto-complete-mode t)
 ))
 
-;; A nice looking modeline enhancement
-(use-package spaceline
-  :ensure t)
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)	
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
 
-;; Add some visual flair to the modeline enhancements
-(use-package spaceline-all-the-icons
+(use-package doom-modeline
   :ensure t
-  :after spaceline
- :config (spaceline-all-the-icons-theme)
-  (spaceline-all-the-icons--setup-neotree))
-
+  :hook (after-init . doom-modeline-mode))
 
 ;; on the fly syntax checking
 (use-package flycheck
@@ -113,7 +115,7 @@
 
 (use-package rainbow-delimiters :hook(prog-mode . rainbow-delimiters-mode))
 
-(load-theme 'doom-nord)
+(load-theme 'doom-gruvbox)
 
 (electric-pair-mode 1)
 (setq electric-pair-preserve-balance nil)
@@ -141,3 +143,4 @@
     (eval-print-last-sexp)))
     ;; golang
     (el-get-bundle go-mode)
+
